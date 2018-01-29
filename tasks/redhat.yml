@@ -70,6 +70,39 @@
         config_network_bridges and
         item['configure']
 
+- name: redhat | Configuring Ovs Bonds
+  template:
+    src: "etc/sysconfig/network-scripts/ifcfg.j2"
+    dest: "/etc/sysconfig/network-scripts/ifcfg-{{ item['name'] }}"
+  register: "config_ovs_bond"
+  become: true
+  with_items: '{{ ovs_bonds }}'
+  when: >
+        config_ovs_bonds and
+        item['configure']
+
+- name: redhat | Configuring Ovs Bridges
+  template:
+    src: "etc/sysconfig/network-scripts/ifcfg.j2"
+    dest: "/etc/sysconfig/network-scripts/ifcfg-{{ item['name'] }}"
+  register: "config_ovs_bridge"
+  become: true
+  with_items: '{{ ovs_bridges }}'
+  when: >
+        config_ovs_bridges and
+        item['configure']
+
+- name: redhat | Configuring Ovs Interfaces
+  template:
+    src: "etc/sysconfig/network-scripts/ifcfg.j2"
+    dest: "/etc/sysconfig/network-scripts/ifcfg-{{ item['name'] }}"
+  register: "config_ovs_interface"
+  become: true
+  with_items: '{{ ovs_interfaces }}'
+  when: >
+        config_ovs_interfaces and
+        item['configure']
+
 - name: redhat | Restarting Network Bonds
   shell: bash -c "ifdown {{ item['item']['name'] }} && ifup {{ item['item']['name'] }}"
   become: true
@@ -96,6 +129,36 @@
   with_items: "{{ config_interface['results'] }}"
   when: >
         config_network_interfaces and
+        enable_configured_interfaces_after_defining and
+        item['item']['configure'] and
+        item['changed']
+
+- name: redhat | Restarting Ovs Bonds
+  shell: bash -c "ifdown {{ item['item']['name'] }} && ifup {{ item['item']['name'] }}"
+  become: true
+  with_items: "{{ config_ovs_bond['results'] }}"
+  when: >
+        config_ovs_bonds and
+        enable_configured_interfaces_after_defining and
+        item['item']['configure'] and
+        item['changed']
+
+- name: redhat | Restarting Ovs Bridges
+  shell: bash -c "ifdown {{ item['item']['name'] }} && ifup {{ item['item']['name'] }}"
+  become: true
+  with_items: "{{ config_ovs_bridge['results'] }}"
+  when: >
+        config_ovs_bridges and
+        enable_configured_interfaces_after_defining and
+        item['item']['configure'] and
+        item['changed']
+
+- name: redhat | Restarting Ovs Interfaces
+  shell: bash -c "ifdown {{ item['item']['name'] }} && ifup {{ item['item']['name'] }}"
+  become: true
+  with_items: "{{ config_ovs_interface['results'] }}"
+  when: >
+        config_ovs_interfaces and
         enable_configured_interfaces_after_defining and
         item['item']['configure'] and
         item['changed']
