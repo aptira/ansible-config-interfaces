@@ -16,6 +16,12 @@ IPADDR={{ item['address'] }}
 NETMASK={{ item['netmask'] }}
 {%   endif %}
 {% endif %}
+{% if item['mtu'] is defined %}
+MTU={{ item['mtu'] }}
+{% endif %}
+{% if item['nm_controlled'] is defined %}
+NM_CONTROLLED={{ item['nm_controlled'] }}
+{% endif %}
 {% if config_network_bonds %}
 {%   if network_bonds is defined %}
 {%     for nb in network_bonds %}
@@ -47,6 +53,30 @@ TYPE=Ethernet
 {%       endfor %}
 {%       if nbr['name'] == item['name'] %}
 TYPE=Bridge
+{%       endif %}
+{%     endfor %}
+{%   endif %}
+{% endif %}
+{% if config_ovs_bridges %}
+{%   if ovs_bridges is defined %}
+{%     if item['extra'] is defined %}
+OVS_EXTRA="{{ item['extra'] }}"
+{%     endif %}
+{%     if item['options'] is defined %}
+OVS_OPTIONS="{% for item2 in item['options'] %}{{ item2['opt'] }}={{ item2['val'] }}{% if not loop.last %} {% endif %}{% endfor %}"
+{%     endif %}
+{%     for nbr in ovs_bridges %}
+{%       for port in nbr['ports'] %}
+{%         if port == item['name'] %}
+DEVICETYPE=ovs
+OVS_BRIDGE={{ nbr['name'] }}
+DELAY=0
+TYPE=OVSPort
+{%         endif %}
+{%       endfor %}
+{%       if nbr['name'] == item['name'] %}
+DEVICETYPE=ovs
+TYPE=OVSBridge
 {%       endif %}
 {%     endfor %}
 {%   endif %}
