@@ -18,6 +18,20 @@
   become: true
   when: config_network_bonds
 
+- name: debian | Installing openvswitch
+  yum:
+    name: "openvswitch"
+  become: true
+  when: config_ovs_bridges or config_ovs_bonds or config_ovs_interfaces
+
+- name: debian | ensure openvswitch running
+  service:
+    name: "openvswitch"
+    state: started
+    enabled: yes
+  become: true
+  when: config_ovs_bridges or config_ovs_bonds or config_ovs_interfaces
+
 - name: debian | Installing VLAN Packages
   apt:
     name: "vlan"

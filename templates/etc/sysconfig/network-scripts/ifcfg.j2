@@ -1,8 +1,8 @@
 BOOTPROTO={{ item['method']|lower }}
 DEVICE={{ item['name'] }}
 {% if item['method']|lower == 'static' %}
-{% if dns_nameservers is defined %}
-{%   for ns in dns_nameservers %}
+{% if item['dnsnameservers'] is defined %}
+{%   for ns in item['dnsnameservers'] %}
 DNS{{ loop.index }}={{ ns }}
 {%   endfor %}
 {% endif %}

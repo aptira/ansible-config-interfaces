@@ -14,6 +14,24 @@
         config_network_bridges and
         ansible_distribution != "Fedora"
 
+- name: redhat | Installing openvswitch
+  yum:
+    name: "openvswitch"
+  become: true
+  when: >
+        config_ovs_bridges and
+        ansible_distribution != "Fedora"
+
+- name: redhat | ensure openvswitch running
+  service:
+    name: "openvswitch"
+    state: started
+    enabled: yes
+  become: true
+  when: >
+        config_ovs_bridges and
+        ansible_distribution != "Fedora"
+
 - name: redhat | Installing VLAN Packages
   yum:
     name: "vconfig"
