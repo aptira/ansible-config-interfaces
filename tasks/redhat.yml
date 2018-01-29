@@ -55,6 +55,13 @@
   become: true
   when: config_network_bridges
 
+- name: redhat | Enabling VLAN
+  modprobe:
+    name: "8021q"
+    state: "present"
+  become: true
+  when: config_network_vlans
+
 - name: redhat | Configuring Interfaces
   template:
     src: "etc/sysconfig/network-scripts/ifcfg.j2"
