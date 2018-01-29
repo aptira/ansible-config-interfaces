@@ -176,7 +176,7 @@
   become: true
   with_items: "{{ config_ovs_interface['results'] }}"
   when: >
-        config_ovs_interfaces and
+        (config_ovs_interfaces or config_ovs_bridges) and
         enable_configured_interfaces_after_defining and
         item['item']['configure'] and
         item['changed']
