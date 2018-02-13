@@ -2,7 +2,7 @@
 BOOTPROTO={{ item['method']|lower }}
 {% endif %}
 DEVICE={{ item['name'] }}
-{% if item['method'] is not defined or item['method']|lower == 'static' %}
+{% if item['method'] is not defined or item['method']|lower == 'none' %}
 {% if item['dnsnameservers'] is defined %}
 {%   for ns in item['dnsnameservers'] %}
 DNS{{ loop.index }}={{ ns }}
@@ -17,6 +17,9 @@ IPADDR={{ item['address'] }}
 {%   if item['netmask'] is defined %}
 NETMASK={{ item['netmask'] }}
 {%   endif %}
+{% endif %}
+{% if '.' in item['name'] %}
+VLAN=yes
 {% endif %}
 {% if item['mtu'] is defined %}
 MTU={{ item['mtu'] }}
