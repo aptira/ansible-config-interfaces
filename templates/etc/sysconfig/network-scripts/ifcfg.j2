@@ -2,7 +2,7 @@
 BOOTPROTO={{ item['method']|lower }}
 {% endif %}
 DEVICE={{ item['name'] }}
-{% if item['method'] is not defined or item['method']|lower == 'none' %}
+{% if item['method'] is not defined or item['method']|lower == 'none' or item['method']|lower == 'static' %}
 {% if item['dnsnameservers'] is defined %}
 {%   for ns in item['dnsnameservers'] %}
 DNS{{ loop.index }}={{ ns }}
@@ -76,7 +76,11 @@ OVS_OPTIONS="{% for item2 in item['options'] %}{{ item2['opt'] }}={{ item2['val'
 DEVICETYPE=ovs
 OVS_BRIDGE={{ nbr['name'] }}
 DELAY=0
+{% if 'ovs_port_type' in item and item['ovs_port_type'] == 'internal' %}
+TYPE=OVSIntPort
+{% else %}
 TYPE=OVSPort
+{% endif %}
 {%         endif %}
 {%       endfor %}
 {%       if nbr['name'] == item['name'] %}
